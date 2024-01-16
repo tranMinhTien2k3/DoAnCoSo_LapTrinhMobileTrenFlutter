@@ -7,3 +7,8 @@
 /test/
 /web/
 /windows/
+/build/
+.metadata
+analysis_options.yaml
+appdemo.iml
+pubspec.lock
