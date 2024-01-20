@@ -1,37 +1,71 @@
 import 'package:flutter/material.dart';
-import 'package:appdemo/models/content.dart';
+class ContentCard extends StatefulWidget {
+  @override
+  State<ContentCard> createState() => _ContentCardState();
+}
 
-class ContentCard extends StatelessWidget {
-  final Content content;
-
-  // Constructor để nhận dữ liệu Content
-  ContentCard({required this.content});
+class _ContentCardState extends State<ContentCard> {
+  List<bool> isSelected = [false, false, false];
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 3,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
+    return Container(
+        padding: EdgeInsets.all(20.0),
+        color: Colors.grey,
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              content.title,
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.abc),
+              SizedBox(width: 8.0),
+              Text(
+                " Name",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-            SizedBox(height: 8),
-            Text(
-              content.description,
-              style: TextStyle(fontSize: 16),
-            ),
-            // Bạn có thể thêm các thành phần khác tùy thuộc vào yêu cầu cụ thể
-          ],
+            ],
+          ),
+          SizedBox(height: 8.0),
+          Text("content"),
+          Row(
+           children: [
+             ToggleButtons(
+               children: [
+                 Icon(Icons.favorite),
+                 Icon(Icons.thumb_up),
+                 Icon(Icons.star),
+               ],
+               isSelected: isSelected,
+                onPressed: (int index) {
+                  
+                 setState(() {
+                   isSelected[index] = !isSelected[index];
+                 });
+          },
         ),
+        SizedBox(height: 20),
+        
+      ],
+
+          ),
+        ],
       ),
+        
     );
+  }
+
+    String getSelectedEmojis() {
+    List<String> emojis = ['❤️', '👍', '⭐'];
+
+    List<String> selectedEmojis = [];
+    for (int i = 0; i < isSelected.length; i++) {
+      if (isSelected[i]) {
+        selectedEmojis.add(emojis[i]);
+      }
+    }
+
+    return selectedEmojis.isEmpty ? 'Chưa chọn' : selectedEmojis.join(' ');
   }
 }

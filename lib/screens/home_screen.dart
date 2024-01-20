@@ -1,5 +1,11 @@
+import 'package:appdemo/screens/CreateContent.dart';
+import 'package:appdemo/screens/login.dart';
+import 'package:appdemo/screens/notification.dart';
+import 'package:appdemo/screens/profile_screen.dart';
+import 'package:appdemo/screens/schedule_detail.dart';
+import 'package:appdemo/widgets/content_card.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -8,6 +14,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  bool isLoggedIn = true;
   bool _isSearching = false;
   @override
   Widget build(BuildContext context) {
@@ -46,71 +53,89 @@ class _HomeScreenState extends State<HomeScreen> {
             const DrawerHeader(
               decoration: BoxDecoration(
                 color: Colors.green,
-              ), //BoxDecoration
+              ),
               child: UserAccountsDrawerHeader(
                 decoration: BoxDecoration(color: Colors.green),
                 accountName: Text(
-                  "Abhishek Mishra",
+                  "",
                   style: TextStyle(fontSize: 18),
                 ),
-                accountEmail: Text("abhishekm977@gmail.com"),
+                accountEmail: Text(""),
                 currentAccountPictureSize: Size.square(50),
                 currentAccountPicture: CircleAvatar(
                   backgroundColor: Color.fromARGB(255, 165, 255, 137),
                   child: Text(
-                    "A",
+                    "",
                     style: TextStyle(fontSize: 30.0, color: Colors.blue),
-                  ), //Text
-                ), //circleAvatar
-              ), //UserAccountDrawerHeader
-            ), //DrawerHeader
+                  ), 
+                ),
+              ),
+            ), 
             ListTile(
               leading: const Icon(Icons.person),
               title: const Text(' My Profile '),
               onTap: () {
-                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  CupertinoPageRoute(builder: (context) => ProfileScreen()),
+                  );
+                
               },
             ),
             ListTile(
-              leading: const Icon(Icons.book),
-              title: const Text(' My Course '),
+              leading: const Icon(Icons.calendar_month),
+              title: const Text(' My Schedule '),
               onTap: () {
-                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  CupertinoPageRoute(builder: (context) => ScheduleScreen()),
+                  );
               },
             ),
             ListTile(
-              leading: const Icon(Icons.workspace_premium),
-              title: const Text(' Go Premium '),
+              leading: const Icon(Icons.notifications),
+              title: const Text(' Notifications '),
               onTap: () {
-                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  CupertinoPageRoute(builder: (context) => Notifucation()),
+                  );
               },
             ),
             ListTile(
               leading: const Icon(Icons.video_label),
-              title: const Text(' Saved Videos '),
+              title: const Text('Content creation'),
               onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.edit),
-              title: const Text(' Edit Profile '),
-              onTap: () {
-                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  CupertinoPageRoute(builder: (context) => CreateContent()),
+                  );
               },
             ),
             ListTile(
               leading: const Icon(Icons.logout),
-              title: const Text('LogOut'),
+              title: Text(isLoggedIn ?  'Đăng nhập':'Đăng xuất' ),
               onTap: () {
-                Navigator.pop(context);
+                setState(() {
+                isLoggedIn = !isLoggedIn;
+              });
+                Navigator.push(
+                  context,
+                  CupertinoPageRoute(builder: (context) => LoginPage()),
+                  );
               },
             ),
           ],
         ),
       ),
-      body: const Padding(
-        padding: EdgeInsets.all(16.0),
+      body: Center(
+        child: Column(
+        children: [
+          ContentCard(),
+          ContentCard(),
+          ContentCard(),
+          ],
+      ),
       ),
     );
   }
