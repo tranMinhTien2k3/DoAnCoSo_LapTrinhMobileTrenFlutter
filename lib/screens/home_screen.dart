@@ -32,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 style: const TextStyle(color: Colors.white),
               )
-            : const Text('Home Screen'),
+            : const Text('Home'),
         backgroundColor: Colors.blue,
         actions:[
            IconButton(

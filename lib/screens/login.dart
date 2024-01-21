@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:appdemo/screens/logup.dart';
+import 'package:appdemo/screens/signup.dart';
 import 'package:appdemo/widgets/bezier.dart';
 
 class LoginPage extends StatefulWidget {
