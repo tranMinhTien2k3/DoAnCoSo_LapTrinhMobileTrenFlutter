@@ -1,71 +1,88 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 class ContentCard extends StatefulWidget {
   @override
   State<ContentCard> createState() => _ContentCardState();
 }
 
 class _ContentCardState extends State<ContentCard> {
-  List<bool> isSelected = [false, false, false];
-
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: EdgeInsets.all(20.0),
-        color: Colors.grey,
+        height: 100,
+        margin: const EdgeInsets.symmetric(vertical: 5.0),
+        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        color: Colors.white,
         child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _postHeader(),
+            Spacer(),
+              ElevatedButton(
+                onPressed: () {
+                  _showCommentDialog(context);
+                },
+                child: Text('Comment'),
+              ),
+          ],
+        ),
+    );
+  }
+}
+Future<void> _showCommentDialog(BuildContext context) async {
+    TextEditingController commentController = TextEditingController();
+
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Comment'),
+          content: Column(
             children: [
-              Icon(Icons.abc),
-              SizedBox(width: 8.0),
-              Text(
-                " Name",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
+              // Text field for user to enter a comment
+              TextField(
+                controller: commentController,
+                decoration: InputDecoration(labelText: 'Enter your comment'),
               ),
             ],
           ),
-          SizedBox(height: 8.0),
-          Text("content"),
-          Row(
-           children: [
-             ToggleButtons(
-               children: [
-                 Icon(Icons.favorite),
-                 Icon(Icons.thumb_up),
-                 Icon(Icons.star),
-               ],
-               isSelected: isSelected,
-                onPressed: (int index) {
-                  
-                 setState(() {
-                   isSelected[index] = !isSelected[index];
-                 });
-          },
-        ),
-        SizedBox(height: 20),
-        
-      ],
-
-          ),
-        ],
-      ),
-        
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                // Add your logic to handle the comment submission
+                String userComment = commentController.text;
+                print('Comment Submitted: $userComment');
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text('Submit'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text('Cancel'),
+            ),
+          ],
+        );
+      },
     );
   }
-
-    String getSelectedEmojis() {
-    List<String> emojis = ['❤️', '👍', '⭐'];
-
-    List<String> selectedEmojis = [];
-    for (int i = 0; i < isSelected.length; i++) {
-      if (isSelected[i]) {
-        selectedEmojis.add(emojis[i]);
-      }
-    }
-
-    return selectedEmojis.isEmpty ? 'Chưa chọn' : selectedEmojis.join(' ');
+  
+class _postHeader extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Icon(Icons.account_circle),
+        const SizedBox(width: 8.0),
+        Column(
+          children: [
+            Text("Name"),
+          ],
+        )
+      ],
+      
+    );
   }
+  
 }

@@ -28,12 +28,45 @@ class _ProfileScreen extends State<ProfileScreen>{
   }
   @override
   Widget build(BuildContext context) {
-    
+    final Map<String, dynamic> userProfile = {
+    "address": "Nam Dinh",
+    "gender": true,
+    "occupation": "free",
+    "age": 20,
+    "username": "Tien",
+  };
      return Scaffold(
       
       appBar: AppBar(
         leading: _backButton(),
         title: Text("Profile"),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: ListView(
+          children: [
+            ListTile(
+              title: Text("Username"),
+              subtitle: Text(userProfile["username"]),
+            ),
+            ListTile(
+              title: Text("Gender"),
+              subtitle: Text(userProfile["gender"] ? 'Male' : 'Female'),
+            ),
+            ListTile(
+              title: Text("Age"),
+              subtitle: Text(userProfile["age"].toString()),
+            ),
+            ListTile(
+              title: Text("Address"),
+              subtitle: Text(userProfile["address"]),
+            ),
+            ListTile(
+              title: Text("Occupation"),
+              subtitle: Text(userProfile["occupation"]),
+            ),
+          ],
+        ),
       ),
      );
   }

@@ -11,3 +11,6 @@
 .metadata
 appdemo.iml
 pubspec.lock
+.flutter-plugins-dependencies
+.flutter-plugins
+.vscode

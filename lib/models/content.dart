@@ -1,11 +1,7 @@
 class Content {
-  final String title;
-  final String description;
-  final String mediaUrl; // Đường dẫn đến nội dung đa phương tiện (video, hình ảnh, ...)
+  final String name;
+  final String content;
+  final String imageUrl;
 
-  Content({
-    required this.title,
-    required this.description,
-    required this.mediaUrl,
-  });
+  Content({required this.name, required this.content, required this.imageUrl});
 }

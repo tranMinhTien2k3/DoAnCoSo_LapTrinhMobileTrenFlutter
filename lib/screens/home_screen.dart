@@ -1,9 +1,11 @@
+import 'package:appdemo/common/toast.dart';
 import 'package:appdemo/screens/CreateContent.dart';
 import 'package:appdemo/screens/login.dart';
 import 'package:appdemo/screens/notification.dart';
 import 'package:appdemo/screens/profile_screen.dart';
 import 'package:appdemo/screens/schedule_detail.dart';
 import 'package:appdemo/widgets/content_card.dart';
+import 'package:appdemo/widgets/form_container.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 class HomeScreen extends StatefulWidget {
@@ -14,11 +16,13 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  bool isLoggedIn = true;
+  bool _isLoggedIn = false;
   bool _isSearching = false;
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: const Color.fromARGB(255, 182, 218, 184),
       appBar: AppBar(
          title: _isSearching
@@ -113,26 +117,35 @@ class _HomeScreenState extends State<HomeScreen> {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.logout),
-              title: Text(isLoggedIn ?  'Đăng nhập':'Đăng xuất' ),
-              onTap: () {
-                setState(() {
-                isLoggedIn = !isLoggedIn;
-              });
-                Navigator.push(
-                  context,
-                  CupertinoPageRoute(builder: (context) => LoginPage()),
+              leading: _isLoggedIn ? const Icon(Icons.logout) : const Icon(Icons.login),
+              title: _isLoggedIn ? const Text('Logout') : const Text('Login'),
+              onTap: () async {
+                if (_isLoggedIn) {
+                  signOut();
+                  setState(() {
+                    _isLoggedIn = false;
+                  });
+                } else {
+                  bool loginSuccess = await Navigator.push(
+                    context,
+                    CupertinoPageRoute(builder: (context) => LoginPage()),
                   );
-              },
-            ),
+
+                if (loginSuccess) {
+                  setState(() {
+                  _isLoggedIn = true;
+                  });
+                } else {
+                }
+              }
+            },
+          ),
           ],
         ),
       ),
       body: Center(
         child: Column(
         children: [
-          ContentCard(),
-          ContentCard(),
           ContentCard(),
           ],
       ),
