@@ -1,8 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:appdemo/screens/signup.dart';
 import 'package:appdemo/widgets/form_container.dart';
 import 'package:appdemo/common/toast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -23,25 +20,6 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
 
-  Widget _backButton() {
-    return InkWell(
-      onTap: () {
-        Navigator.pop(context);
-      },
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 10),
-        child: Row(
-          children: <Widget>[
-            Container(
-              padding: EdgeInsets.only(left: 0, top: 10, bottom: 10),
-              child: Icon(Icons.keyboard_arrow_left, color: Colors.black),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   @override
   void dispose() {
     _emailController.dispose();
@@ -55,8 +33,13 @@ class _LoginPageState extends State<LoginPage> {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        leading: _backButton(),
-        title: Text("Đăng nhập"),
+        leading: IconButton(
+          icon: Icon(Icons.home),
+          onPressed: (){
+            Navigator.pushNamed(context, "/home");
+          },
+        ),
+        title: Text("Home"),
       ),
       body: Center(
         child: Padding(
@@ -83,6 +66,26 @@ class _LoginPageState extends State<LoginPage> {
                 controller: _passwordController,
                 hintText: "Password",
                 isPasswordField: true,
+              ),
+               SizedBox(
+                height: 10,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, '/fwp');
+                    },
+                    child: Text(
+                      "Forgot Password",
+                      style: TextStyle(
+                        color: Colors.blue,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
               ),
               SizedBox(
                 height: 30,
@@ -114,7 +117,6 @@ class _LoginPageState extends State<LoginPage> {
               GestureDetector(
                 onTap: () {
                   _signInWithGoogle();
-
                 },
                 child: Container(
                   width: double.infinity,
@@ -156,11 +158,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(builder: (context) => SignUpPage()),
-                            (route) => false,
-                      );
+                      Navigator.pushNamed(context, '/signUp');
                     },
                     child: Text(
                       "Sign Up",
@@ -188,7 +186,6 @@ class _LoginPageState extends State<LoginPage> {
     String password = _passwordController.text;
 
     User? user = await _auth.signInWithEmailAndPassword(email, password);
-
     setState(() {
       _isSigning = false;
     });
@@ -224,7 +221,7 @@ class _LoginPageState extends State<LoginPage> {
       }
 
     }catch(e) {
-showToast(message: "some error occured $e");
+        showToast(message: "some error occured $e");
     }
 
 

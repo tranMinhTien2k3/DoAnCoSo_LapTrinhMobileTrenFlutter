@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:appdemo/common/toast.dart';
 
@@ -5,7 +6,7 @@ import 'package:appdemo/common/toast.dart';
 class FirebaseAuthService {
 
   FirebaseAuth _auth = FirebaseAuth.instance;
-
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   Future<User?> signUpWithEmailAndPassword(String email, String password) async {
 
     try {

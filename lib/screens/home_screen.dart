@@ -1,12 +1,7 @@
 import 'package:appdemo/common/toast.dart';
-import 'package:appdemo/screens/CreateContent.dart';
-import 'package:appdemo/screens/login.dart';
-import 'package:appdemo/screens/notification.dart';
-import 'package:appdemo/screens/profile_screen.dart';
-import 'package:appdemo/screens/schedule_detail.dart';
 import 'package:appdemo/widgets/content_card.dart';
-import 'package:appdemo/widgets/form_container.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -16,9 +11,37 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  bool _isLoggedIn = false;
+  final user = FirebaseAuth.instance.currentUser;
+  CollectionReference users = FirebaseFirestore.instance.collection("Users");
   bool _isSearching = false;
+  String documentId="";
   
+  GetOptions? get email => null;
+  bool _isLoggedIn() {
+    if(user != null){
+       documentId =  user!.uid;
+      return true;
+    }else return false;
+  }
+    void handleSearch(String query) {
+    List<String> searchList = [];
+    List<String> _data = [''];
+    List<String> _searchResult = [];
+    if (query.isNotEmpty) {
+      _data.forEach((item) {
+        if (item.toLowerCase().contains(query.toLowerCase())) {
+          searchList.add(item);
+        }
+      });
+    } else {
+      searchList.addAll(_data);
+    }
+
+    setState(() {
+      _searchResult.clear();
+      _searchResult.addAll(searchList);
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
          title: _isSearching
             ? TextField(
                 onChanged: (value) {
-                  // Xử lý sự kiện khi nội dung tìm kiếm thay đổi
+                  handleSearch(value);
                 },
                 decoration: const InputDecoration(
                   hintText: 'Search...',
@@ -54,7 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: ListView(
           padding: const EdgeInsets.all(0),
           children: [
-            const DrawerHeader(
+            DrawerHeader(
               decoration: BoxDecoration(
                 color: Colors.green,
               ),
@@ -62,94 +85,92 @@ class _HomeScreenState extends State<HomeScreen> {
                 decoration: BoxDecoration(color: Colors.green),
                 accountName: Text(
                   "",
-                  style: TextStyle(fontSize: 18),
+                  style: TextStyle(fontSize: 0),
                 ),
-                accountEmail: Text(""),
-                currentAccountPictureSize: Size.square(50),
-                currentAccountPicture: CircleAvatar(
-                  backgroundColor: Color.fromARGB(255, 165, 255, 137),
-                  child: Text(
-                    "",
-                    style: TextStyle(fontSize: 30.0, color: Colors.blue),
-                  ), 
+                accountEmail: Text(_isLoggedIn()?user!.email!:"No account"),
+                currentAccountPictureSize: Size.square(100),
+                currentAccountPicture: _isLoggedIn()? FutureBuilder<DocumentSnapshot>(
+                  future: users.doc(documentId).get(),
+                  builder: ((context,snapshot) {
+                  if(snapshot.connectionState==ConnectionState.done){
+                  Map<String, dynamic>? data = 
+                    snapshot.data!.data() as Map<String,dynamic>?;
+                    return ListView(
+                      shrinkWrap: true,
+                      children: [
+                     (data?['image']!="")?CircleAvatar(
+                      radius: 30.0,
+                      backgroundImage: NetworkImage(data?['image']),
+                      backgroundColor: Colors.transparent,
+                    ):CircleAvatar(
+                      radius: 30.0,
+                      backgroundImage: AssetImage('assets/img/user.png'),
+                      backgroundColor: Colors.transparent,
+          )
+                    
+                  ],
+                );
+              }else return Text('Loading...');
+              }
+            )
+          ): CircleAvatar(
+                      radius: 30.0,
+                      backgroundImage: AssetImage('assets/img/user.png'),
+                      backgroundColor: Colors.transparent,
+          )
                 ),
               ),
-            ), 
             ListTile(
               leading: const Icon(Icons.person),
               title: const Text(' My Profile '),
               onTap: () {
-                Navigator.push(
-                  context,
-                  CupertinoPageRoute(builder: (context) => ProfileScreen()),
-                  );
-                
+                _isLoggedIn()?
+                Navigator.pushNamed(context, '/profile'):showToast(message: "You cant login");
               },
             ),
             ListTile(
               leading: const Icon(Icons.calendar_month),
               title: const Text(' My Schedule '),
               onTap: () {
-                Navigator.push(
-                  context,
-                  CupertinoPageRoute(builder: (context) => ScheduleScreen()),
-                  );
+                _isLoggedIn()?
+                Navigator.pushNamed(context, '/schedule'):showToast(message: "You cant login");
               },
             ),
             ListTile(
               leading: const Icon(Icons.notifications),
               title: const Text(' Notifications '),
               onTap: () {
-                Navigator.push(
-                  context,
-                  CupertinoPageRoute(builder: (context) => Notifucation()),
-                  );
+                _isLoggedIn()?
+                Navigator.pushNamed(context, '/notifucation'):showToast(message: "You cant login");
               },
             ),
             ListTile(
               leading: const Icon(Icons.video_label),
               title: const Text('Content creation'),
               onTap: () {
-                Navigator.push(
-                  context,
-                  CupertinoPageRoute(builder: (context) => CreateContent()),
-                  );
+                _isLoggedIn()?
+                Navigator.pushNamed(context, '/content'):showToast(message: "You cant login");
               },
             ),
+            _isLoggedIn()==false?
             ListTile(
-              leading: _isLoggedIn ? const Icon(Icons.logout) : const Icon(Icons.login),
-              title: _isLoggedIn ? const Text('Logout') : const Text('Login'),
-              onTap: () async {
-                if (_isLoggedIn) {
-                  signOut();
-                  setState(() {
-                    _isLoggedIn = false;
-                  });
-                } else {
-                  bool loginSuccess = await Navigator.push(
-                    context,
-                    CupertinoPageRoute(builder: (context) => LoginPage()),
-                  );
-
-                if (loginSuccess) {
-                  setState(() {
-                  _isLoggedIn = true;
-                  });
-                } else {
-                }
-              }
-            },
+              leading: const Icon(Icons.login),
+              title: const Text('Login'),
+              onTap: () {
+               Navigator.pushNamed(context, '/login');
+              },    
+          ):
+          ListTile(
+              leading: const Icon(Icons.logout),
+              title: const Text('Logout'),
+              onTap: () {
+                signOut(context);
+            },    
           ),
           ],
         ),
       ),
-      body: Center(
-        child: Column(
-        children: [
-          ContentCard(),
-          ],
-      ),
-      ),
+      body: ContentCard(),
     );
   }
 }
