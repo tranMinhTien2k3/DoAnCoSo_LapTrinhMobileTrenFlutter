@@ -35,6 +35,12 @@ class _Notifucation extends State<Notifucation>{
         leading: _backButton(),
         title: Text("Thông báo"),
       ),
+      body:Column(children: [Text("Tien da thich bai viet ban dang"),
+      Divider(),
+      Text("Tien da binh luan bai viet ban dang"),
+       Divider(),
+       
+      ],)
      );
   }
 }

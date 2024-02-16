@@ -1,14 +1,13 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:uuid/uuid.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
-
   @override
   State<ProfileScreen> createState() => _ProfileScreen();
 }
@@ -144,7 +143,6 @@ class _ProfileScreen extends State<ProfileScreen>{
           'email': user?.email,
         });
         
-        // Gán giá trị mặc định cho data để sử dụng trong UI
         data = {
           'fist name': '',
           'last name': '',
@@ -167,12 +165,13 @@ class _ProfileScreen extends State<ProfileScreen>{
                     print('${file?.path}');
 
                     if (file == null) return;
-
+                    var uuid = Uuid();
+                      var randomName = uuid.v4();
                     Reference referenceRoot = FirebaseStorage.instance.ref();
                     Reference referenceDirImages =
-                        referenceRoot.child('img');
+                        referenceRoot.child('avt');
                     Reference referenceImageToUpload =
-                        referenceDirImages.child('name');
+                        referenceDirImages.child(randomName);
 
                     try {
                       await referenceImageToUpload.putFile(File(file.path));

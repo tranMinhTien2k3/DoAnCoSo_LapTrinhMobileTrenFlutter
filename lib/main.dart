@@ -2,6 +2,7 @@ import 'package:appdemo/screens/CreateContent.dart';
 import 'package:appdemo/screens/comment.dart';
 import 'package:appdemo/screens/fgpassw.dart';
 import 'package:appdemo/screens/login.dart';
+import 'package:appdemo/screens/myContent.dart';
 import 'package:appdemo/screens/notification.dart';
 import 'package:appdemo/screens/profile_screen.dart';
 import 'package:appdemo/screens/schedule_detail.dart';
@@ -56,6 +57,7 @@ class _MyAppState extends ConsumerState<MyApp> {
         '/content':(context) =>CreateContent(),
         '/fwp':(context) =>ForgotPW(),
         '/comment':(context) =>CommentPage(),
+        '/mycontent':(context) => Mycontent(),
       },  
     );   
   }

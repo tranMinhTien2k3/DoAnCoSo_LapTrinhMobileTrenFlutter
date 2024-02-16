@@ -54,6 +54,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
+              // ignore: unrelated_type_equality_checks
               currentDate == Null ?
               "The Date has not been selected yet." :
               DateFormat('dd-MM-yyyy').format(currentDate),

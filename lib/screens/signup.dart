@@ -155,6 +155,7 @@ class _SignUpPageState extends State<SignUpPage> {
       ),
     );
   }
+ // ignore: non_constant_identifier_names
  Future addUserDetails(String fistName, String lastName, String email, int age, String Id) async {
     final CollectionReference usersCollection = FirebaseFirestore.instance.collection('Users');
       await usersCollection.doc(Id).set({
@@ -164,6 +165,7 @@ class _SignUpPageState extends State<SignUpPage> {
         'age': age,
         'address':"",
         'phone':"",
+        'image':"https://firebasestorage.googleapis.com/v0/b/appdemo-88d5f.appspot.com/o/avt%2Favt.jpg?alt=media&token=4bcb97c6-fa56-418d-8cc8-a8d2621215a6"
       });
     }
   void _signUp() async {

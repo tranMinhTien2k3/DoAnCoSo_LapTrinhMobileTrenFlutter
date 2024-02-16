@@ -58,6 +58,9 @@ dependencies:
   firebase_messaging: ^14.7.10
   cached_network_image: ^3.3.1
   image_cropper: ^5.0.1
+  timeago: ^3.6.1
+  video_player: ^2.8.2
+  chewie: ^1.7.5
 
   
 dev_dependencies:
