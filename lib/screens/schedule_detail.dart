@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 class ScheduleScreen extends StatefulWidget {
 
@@ -8,21 +9,7 @@ class ScheduleScreen extends StatefulWidget {
 }
 
 class _ScheduleScreenState extends State<ScheduleScreen> {
-   DateTime currentDate = DateTime.now();
 
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? pickedDate = await showDatePicker(
-      context: context,
-      firstDate: DateTime(2010),
-      lastDate: DateTime(2025)
-    );
-
-    if (pickedDate != null && pickedDate != currentDate) {
-      setState(() {
-        currentDate = pickedDate;
-      });
-    }
-  }
   Widget _backButton() {
     return InkWell(
       onTap: () {
@@ -41,6 +28,13 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
       ),
     );
   }
+  DateTime today =DateTime.now();
+  void _selectDated(DateTime day,DateTime focusedDay){
+    setState(() {
+      today = day;
+    });
+  }
+  TextEditingController eventcontroller = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,24 +42,46 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
         leading: _backButton(),
         title: Text("Quản lý lịch học"),
       ),
+      floatingActionButton: FloatingActionButton(onPressed: () {
+        showDialog(context: context, builder: (context){
+          return AlertDialog(
+            scrollable: true,
+            title: Text("Event Name"),
+            content: Padding(
+              padding: EdgeInsets.all(20),
+              child: TextField(controller: eventcontroller),
+            ),
 
-      body: Center(
+          );
+        });
+      },
+      child: Icon(Icons.add),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(10),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
+          children: [
             Text(
-              // ignore: unrelated_type_equality_checks
-              currentDate == Null ?
-              "The Date has not been selected yet." :
-              DateFormat('dd-MM-yyyy').format(currentDate),
+              "selected day: "+
+              DateFormat('dd-MM-yyyy').format(today),
               style: TextStyle(
-                fontSize: 40,
+                fontSize: 20,
               ),
             ),
-            ElevatedButton(
-              onPressed: () => _selectDate(context),
-              child: Text('Select Date'),
+            Container(
+              child: TableCalendar(
+                locale: "en_US",
+                rowHeight: 43,
+                headerStyle: HeaderStyle(formatButtonVisible: false,titleCentered: true),
+                availableGestures: AvailableGestures.all,
+                selectedDayPredicate: (day)=>isSameDay(day, today),
+                focusedDay: today, 
+                firstDay: DateTime.utc(2020,1,1), 
+                lastDay: DateTime.utc(2030,1,1),
+                onDaySelected: _selectDated,
+                )
             ),
+            
           ],
         ),
       )

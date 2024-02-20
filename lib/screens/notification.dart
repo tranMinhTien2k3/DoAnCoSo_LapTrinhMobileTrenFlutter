@@ -1,8 +1,10 @@
+import 'package:appdemo/widgets/SingleNotification.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:timeago/timeago.dart' as timeago;
 import 'package:flutter/material.dart';
 
 class Notifucation extends StatefulWidget {
-  const Notifucation({super.key});
-
   @override
   State<Notifucation> createState() => _Notifucation();
 }
@@ -26,21 +28,59 @@ class _Notifucation extends State<Notifucation>{
       ),
     );
   }
+  CollectionReference users = FirebaseFirestore.instance.collection("Users");
+  final user = FirebaseAuth.instance.currentUser;
+  late String userId = "";
+  bool _isLoggedIn() {
+    if(user != null){
+      userId = user!.uid;
+      return true;
+    }else return false;
+  }
   @override
   Widget build(BuildContext context) {
-    
+  
      return Scaffold(
-      
       appBar: AppBar(
         leading: _backButton(),
         title: Text("Thông báo"),
       ),
-      body:Column(children: [Text("Tien da thich bai viet ban dang"),
-      Divider(),
-      Text("Tien da binh luan bai viet ban dang"),
-       Divider(),
-       
-      ],)
+      body: FutureBuilder<DocumentSnapshot>(
+          future: _isLoggedIn()?users.doc(userId).get():users.doc(userId).get(),
+          builder: ((context,snapshot) {
+          if(snapshot.connectionState==ConnectionState.done){
+            Map<String, dynamic>? data = snapshot.data!.data() as Map<String,dynamic>?;
+            List noti = [];
+            noti = data?['notifications'];
+            print(noti);
+            return ListView.separated(
+              padding: const EdgeInsets.only(
+                top: 5,
+              ),
+              itemBuilder: (context, index) {
+                DateTime dateTime = noti[index]['time'].toDate();
+                return SingleNotification(
+                  name: noti[index]['name'],
+                  post: noti[index]['post'],
+                  time: timeago.format(dateTime),
+                );
+              },
+              separatorBuilder: (context, index) => const Divider(
+                height: 1,
+              ),
+              itemCount: noti.length,
+            );
+        }else return Text('Loading...');
+      }
+    )
+  )
+      
+      
+      
+      
+
+
      );
   }
 }
+

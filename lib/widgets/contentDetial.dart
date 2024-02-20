@@ -1,4 +1,5 @@
 import 'package:appdemo/common/toast.dart';
+import 'package:appdemo/screens/comment.dart';
 import 'package:appdemo/widgets/media.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -13,6 +14,7 @@ class CustomContainer extends StatefulWidget {
   final List<dynamic> imageURL;
   final String avt;
   final String id;
+  final String idUser;
 
   const CustomContainer({
     Key? key,
@@ -23,7 +25,8 @@ class CustomContainer extends StatefulWidget {
     required this.comments,
     required this.imageURL,
     required this.avt,
-    required this.id,
+    required this.id, 
+    required this.idUser,
   }):super(key: key);
   @override
   State<CustomContainer> createState() => _CustomContainerState();
@@ -31,6 +34,7 @@ class CustomContainer extends StatefulWidget {
 
 class _CustomContainerState extends State<CustomContainer>{
   final user = FirebaseAuth.instance.currentUser;
+  CollectionReference users = FirebaseFirestore.instance.collection("Users");
   late String userId = "";
   bool _isLoggedIn() {
     if(user != null){
@@ -50,6 +54,20 @@ class _CustomContainerState extends State<CustomContainer>{
           'like': FieldValue.arrayUnion([userId])
         },
       );
+      await FirebaseFirestore.instance
+          .collection('Users')
+          .doc(widget.idUser)
+          .update(
+        {
+          'notifications': FieldValue.arrayUnion([
+            {
+              'name': widget.userName,
+              'post': "like your post",
+              'time': Timestamp.now().toDate(),
+            }
+          ])
+        },
+      );
     } on FirebaseException {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -65,6 +83,20 @@ class _CustomContainerState extends State<CustomContainer>{
       await FirebaseFirestore.instance.collection('post').doc(widget.id).update(
         {
           'like': FieldValue.arrayRemove([userId])
+        },
+      );
+      await FirebaseFirestore.instance
+          .collection('Users')
+          .doc(widget.idUser)
+          .update(
+        {
+          'notifications': FieldValue.arrayUnion([
+            {
+              'name': widget.userName,
+              'post': "unlike your post",
+              'time': Timestamp.now().toDate(),
+            }
+          ])
         },
       );
     } on FirebaseException {
@@ -152,7 +184,12 @@ class _CustomContainerState extends State<CustomContainer>{
                   IconButton(
                     onPressed: () {
                       _isLoggedIn()?
-                      Navigator.pushNamed(context, '/comment'):
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CommentPage(comments: widget.comments, id: widget.id, idUser: widget.idUser,),
+                        ),
+                      ):
                       showToast(message:"You can login");
                       },
                     icon: Icon(Icons.comment),

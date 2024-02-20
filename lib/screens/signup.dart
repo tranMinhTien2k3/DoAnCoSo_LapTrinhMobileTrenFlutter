@@ -165,7 +165,8 @@ class _SignUpPageState extends State<SignUpPage> {
         'age': age,
         'address':"",
         'phone':"",
-        'image':"https://firebasestorage.googleapis.com/v0/b/appdemo-88d5f.appspot.com/o/avt%2Favt.jpg?alt=media&token=4bcb97c6-fa56-418d-8cc8-a8d2621215a6"
+        'image':"https://firebasestorage.googleapis.com/v0/b/appdemo-88d5f.appspot.com/o/avt%2Favt.jpg?alt=media&token=4bcb97c6-fa56-418d-8cc8-a8d2621215a6",
+        'notifications':""
       });
     }
   void _signUp() async {

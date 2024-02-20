@@ -25,34 +25,35 @@ class _ProfileScreen extends State<ProfileScreen>{
   }
   Future<void> editProfile(String field)async{
     String newValue ="";
-    await showDialog(context: context, 
-    builder:(context)=>AlertDialog(
-      backgroundColor: Color.fromARGB(255, 175, 196, 175),
-      title: Text("Edit: "+field),
-      content: TextField(
-        autofocus: true,
-        style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),
-        decoration: InputDecoration(
-          hintText: "Enter new $field",
-          hintStyle: TextStyle(color: Color.fromARGB(57, 45, 45, 109),fontWeight: FontWeight.bold)
+    await showDialog(
+      context: context, 
+      builder:(context)=>AlertDialog(
+        backgroundColor: Color.fromARGB(255, 175, 196, 175),
+        title: Text("Edit: "+field),
+        content: TextField(
+          autofocus: true,
+          style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),
+          decoration: InputDecoration(
+            hintText: "Enter new $field",
+            hintStyle: TextStyle(color: Color.fromARGB(57, 45, 45, 109),fontWeight: FontWeight.bold)
+          ),
+          onChanged: (value){
+            newValue = value;
+          },
         ),
-        onChanged: (value){
-          newValue = value;
-        },
+        actions: [
+          TextButton(
+            onPressed: (){
+              Navigator.pop(context);
+            },
+          child: Text('cancel')),
+          TextButton(
+            onPressed: (){
+              Navigator.of(context).pop(newValue);
+            },
+          child: Text('Save'))
+        ],
       ),
-      actions: [
-        TextButton(
-          onPressed: (){
-            Navigator.pop(context);
-          },
-         child: Text('cancel')),
-         TextButton(
-          onPressed: (){
-            Navigator.of(context).pop(newValue);
-          },
-         child: Text('Save'))
-      ],
-    ),
     );
     if(newValue.trim().length>0){
       await  users.doc(documentId).update({field:newValue});  
@@ -134,24 +135,24 @@ class _ProfileScreen extends State<ProfileScreen>{
             Map<String, dynamic>? data = 
             snapshot.data!.data() as Map<String,dynamic>?;
              if (data == null || data.isEmpty) {
-        users.doc(documentId).set({
-          'fist name': '',
-          'last name': '',
-          'phone': '',
-          'address': '',
-          'age': '',
-          'email': user?.email,
-        });
-        
-        data = {
-          'fist name': '',
-          'last name': '',
-          'phone': '',
-          'address': '',
-          'age': '',
-          'email': user?.email,
-        };
-      }
+              users.doc(documentId).set({
+                'fist name': '',
+                'last name': '',
+                'phone': '',
+                'address': '',
+                'age': '',
+                'email': user?.email,
+              });
+              
+              data = {
+                'fist name': '',
+                'last name': '',
+                'phone': '',
+                'address': '',
+                'age': '',
+                'email': user?.email,
+              };
+            }
             return ListView(
               shrinkWrap: true,
               children: [

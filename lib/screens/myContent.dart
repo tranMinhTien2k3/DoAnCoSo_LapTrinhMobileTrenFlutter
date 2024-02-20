@@ -107,7 +107,8 @@ class _Mycontent extends State<Mycontent> {
               comments: documents[index]['comment'],
               imageURL: documents[index]['image'],
               avt:avts[index],
-              id: documents[index].id,
+              id: documents[index].id, 
+              idUser: currentUserID,
             );
 
             },

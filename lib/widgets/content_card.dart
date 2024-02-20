@@ -89,6 +89,7 @@ class _ContentCardState extends State<ContentCard> {
                       imageURL: documents[index]['image'],
                       avt: avts[index],
                       id: documents[index].id,
+                      idUser: userIds[index],
                     );
                   },
                 );
