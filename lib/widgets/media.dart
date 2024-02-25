@@ -52,7 +52,6 @@ class _VideoWidgetState extends State<VideoWidget> {
     _controller = VideoPlayerController.networkUrl(
       relativeUri,
     )..initialize().then((_){
-      _controller.play();
       setState(() {}); 
     });
     
@@ -71,16 +70,16 @@ class _VideoWidgetState extends State<VideoWidget> {
           Row(
             children: [
               ElevatedButton(
-                onPressed: (){
-                  _controller.pause();
-                }, 
-                child: const Icon(Icons.pause)
-                ),
-              ElevatedButton(
-                onPressed: (){
-                  _controller.play();
-                }, 
-                child: const Icon(Icons.play_arrow)
+                onPressed:() {
+                  setState(() {
+                    if(_controller.value.isPlaying){
+                      _controller.pause();
+                    }else{
+                      _controller.play();
+                    }
+                  });
+                },
+                child: Icon(_controller.value.isPlaying? Icons.pause:Icons.play_arrow),
                 ),
             ],
           )

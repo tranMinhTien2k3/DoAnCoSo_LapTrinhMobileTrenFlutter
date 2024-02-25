@@ -146,7 +146,7 @@ class _CommentState extends State<CommentPage> {
       body: Container(
         child: CommentBox(
           userImage: CommentBox.commentImageParser(
-              imageURLorPath: "assets/img/user.png"),
+              imageURLorPath: avts.isNotEmpty ? avts[0] :"assets/img/user.png"),
           child: commentChild(widget.comments),
           labelText: 'Write a comment...',
           errorText: 'Comment cannot be blank',
