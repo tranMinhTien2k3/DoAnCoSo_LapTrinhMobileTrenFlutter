@@ -88,25 +88,6 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     }
   }
 
-  Widget _backButton() {
-    return InkWell(
-      onTap: () {
-        Navigator.pop(context);
-      },
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 10),
-        child: Row(
-          children: <Widget>[
-            Container(
-              padding: EdgeInsets.only(left: 0, top: 10, bottom: 10),
-              child: Icon(Icons.keyboard_arrow_left, color: Colors.black),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   DateTime today = DateTime.now();
 
   void _selectDated(DateTime day, DateTime focusedDay) {
@@ -124,7 +105,6 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        leading: _backButton(),
         title: Text("Quản lý lịch học"),
       ),
       floatingActionButton: FloatingActionButton(

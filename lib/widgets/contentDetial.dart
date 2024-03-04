@@ -1,6 +1,5 @@
 import 'package:appdemo/common/toast.dart';
 import 'package:appdemo/screens/comment.dart';
-import 'package:appdemo/widgets/media.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -109,112 +108,158 @@ class _CustomContainerState extends State<CustomContainer>{
   }
   
   @override
-  Widget build(BuildContext context) {
-    DateTime dateTime = widget.time.toDate();
-    return Container(
-      padding: EdgeInsets.all(5.0),
-      margin: EdgeInsets.all(5.0),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12.0),
-        color: Colors.grey[200],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  CircleAvatar(
-                      radius: 30.0,
-                      backgroundImage: new NetworkImage(widget.avt),
-                      backgroundColor: Colors.transparent,
-                    ),
-                  SizedBox(width: 8.0),
-                  Text(widget.userName),
-                ],
-              ),
-              Text(timeago.format(dateTime)),
-            ],
-          ),
-          SizedBox(height: 12.0),
-          Text(
-            widget.mainContent,
-            style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: 12.0),
-      
-          SizedBox(
-            height: 200,
-            width: double.infinity,
-            child:  MediaScreen(mediaUrls: widget.imageURL),
-        
-          ),
-
-          Divider(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Stack(
-                children: [
-                  IconButton(
-                    onPressed: () async {
-                      _isLoggedIn()?
-                      widget.likes.contains(userId)?
-                        dislikePost(context):
-                        likePost(context):
-                        showToast(message:"You can login");
-                    },
-                    icon: _isLoggedIn()?widget.likes.contains(userId)
-                        ? Icon(Icons.thumb_up)
-                        : Icon(Icons.thumb_up_alt_outlined):Icon(Icons.thumb_up),
+Widget build(BuildContext context) {
+  DateTime dateTime = widget.time.toDate();
+  return Container(
+    padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
+    margin: EdgeInsets.all(10.0),
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(12.0),
+      color: Colors.grey[200],
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                CircleAvatar(
+                  radius: 30.0,
+                  backgroundImage: NetworkImage(widget.avt),
+                  backgroundColor: Colors.transparent,
+                ),
+                SizedBox(width: 8.0),
+                Text(
+                  widget.userName,
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
                   ),
+                ),
+              ],
+            ),
+            Text(
+              timeago.format(dateTime),
+              style: TextStyle(
+                fontSize: 14.0,
+                color: Colors.grey,
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 12.0),
+        Text(
+          widget.mainContent,
+          style: TextStyle(
+            fontSize: 18.0,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(height: 12.0),
+        SizedBox(
+          height: 250,
+          width: double.infinity,
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                for (var imageUrl in widget.imageURL)
+                  Container(
+                    margin: EdgeInsets.only(right: 2.0),
+                    child: Image.network(imageUrl, fit: BoxFit.cover),
+                  ),
+              ],
+            ),
+          ),
+        ),
+        Center(
+          child: Text(
+            "Số trang: ${widget.imageURL.length} .Hãy lướt sang để xem tiếp",
+            style: TextStyle(
+              fontSize: 10.0,
+              fontWeight: FontWeight.normal,
+            ),
+          ),
+        ),
+        Divider(),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            GestureDetector(
+              onTap: () async {
+                _isLoggedIn()
+                    ? widget.likes.contains(userId)
+                        ? dislikePost(context)
+                        : likePost(context)
+                    : showToast(message: "You can login");
+              },
+              child: Row(
+                children: [
+                  Icon(
+                    _isLoggedIn()
+                        ? widget.likes.contains(userId)
+                            ? Icons.thumb_up
+                            : Icons.thumb_up_alt_outlined
+                        : Icons.thumb_up,
+                    color: _isLoggedIn()
+                        ? widget.likes.contains(userId)
+                            ? Colors.blue
+                            : null
+                        : null,
+                  ),
+                  SizedBox(width: 5.0),
                   Text(
-                        widget.likes.length.toString(), 
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                    widget.likes.length.toString(),
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ],
               ),
-              Stack(
-                children: [
-                  IconButton(
-                    onPressed: () {
-                      _isLoggedIn()?
-                      Navigator.push(
+            ),
+            GestureDetector(
+              onTap: () {
+                _isLoggedIn()
+                    ? Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => CommentPage(comments: widget.comments, id: widget.id, idUser: widget.idUser,),
+                          builder: (context) => CommentPage(
+                            comments: widget.comments,
+                            id: widget.id,
+                            idUser: widget.idUser,
+                          ),
                         ),
-                      ):
-                      showToast(message:"You can login");
-                      },
-                    icon: Icon(Icons.comment),
-                  ),
+                      )
+                    : showToast(message: "You can login");
+              },
+              child: Row(
+                children: [
+                  Icon(Icons.comment),
+                  SizedBox(width: 5.0),
                   Text(
-                        widget.comments.length.toString(), 
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                    widget.comments.length.toString(),
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ],
               ),
-              
-            ],
-            
-          ),
-          Container(
-      height: 12,
-      color: Color.fromARGB(255, 182, 218, 184),
+            ),
+          ],
+        ),
+        SizedBox(height: 10.0),
+        Container(
+          height: 1,
+          color: Colors.grey[300],
+        ),
+      ],
     ),
-        ],
-      ),
-    
-    );
-  }
+  );
+}
+
 }
   

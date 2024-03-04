@@ -60,24 +60,6 @@ class _ProfileScreen extends State<ProfileScreen>{
       Navigator.pushNamed(context, '/profile');
       }
   }
-  Widget _backButton() {
-    return InkWell(
-      onTap: () {
-        Navigator.pushNamed(context, '/home');
-      },
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 10),
-        child: Row(
-          children: <Widget>[
-            Container(
-              padding: EdgeInsets.only(left: 0, top: 10, bottom: 10),
-              child: Icon(Icons.keyboard_arrow_left, color: Colors.black),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
   itemProfile(String title, String subtitle,String n, IconData iconData) {
     return Container(
       decoration: BoxDecoration(
@@ -109,16 +91,14 @@ class _ProfileScreen extends State<ProfileScreen>{
   } 
   @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         backgroundColor: Colors.green[200],
-        leading: _backButton(),
         title:Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Profile"),
+            Text("Thông tin cá nhân"),
             Text(
               _isLoggedIn()?user!.email!:"Please Sign In",
               style: TextStyle(fontSize: 12),

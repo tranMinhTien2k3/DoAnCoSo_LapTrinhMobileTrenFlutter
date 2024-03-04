@@ -3,9 +3,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class ContentCard extends StatefulWidget {
+  final String searchText;
+  ContentCard({Key? key, required this.searchText}) : super(key: key);
+
   @override
   State<ContentCard> createState() => _ContentCardState();
 }
+
 
 class _ContentCardState extends State<ContentCard> {
   
@@ -76,6 +80,8 @@ class _ContentCardState extends State<ContentCard> {
                 List<dynamic> data = snapshot.data as List<dynamic>;
                 usernames = data[0] as List<String>;
                 avts = data[1] as List<String>;
+
+                documents.removeWhere((doc) => !doc['content'].toLowerCase().contains(widget.searchText.toLowerCase()));
 
                 return ListView.builder(
                   itemCount: documents.length,

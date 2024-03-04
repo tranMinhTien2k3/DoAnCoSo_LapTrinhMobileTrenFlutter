@@ -40,7 +40,7 @@ class VideoWidget extends StatefulWidget {
 
 class _VideoWidgetState extends State<VideoWidget> {
   late VideoPlayerController _controller;
-
+  Duration? _videoDuration;
   @override
   void initState() {
     super.initState();
@@ -51,38 +51,33 @@ class _VideoWidgetState extends State<VideoWidget> {
     Uri relativeUri = Uri.parse(widget.videoUrl);
     _controller = VideoPlayerController.networkUrl(
       relativeUri,
-    )..initialize().then((_){
-      setState(() {}); 
+    )..initialize().then((_) {
+      setState(() {
+        _videoDuration = _controller.value.duration;
+      });
     });
-    
   }
+
+
 
   @override
   Widget build(BuildContext context) {
     return Center(
       child: _controller.value.isInitialized? 
-      Column(
+      Stack(
         children: [
           AspectRatio(
             aspectRatio: _controller.value.aspectRatio,
             child: VideoPlayer(_controller) 
           ),
-          Row(
-            children: [
-              ElevatedButton(
-                onPressed:() {
-                  setState(() {
-                    if(_controller.value.isPlaying){
-                      _controller.pause();
-                    }else{
-                      _controller.play();
-                    }
-                  });
-                },
-                child: Icon(_controller.value.isPlaying? Icons.pause:Icons.play_arrow),
-                ),
-            ],
-          )
+          if (_videoDuration != null) 
+            Text(
+              '${_videoDuration!.toString().split('.').first}',
+              style: TextStyle(
+                fontSize: 18,
+                color: Colors.white,
+              ),
+            ),
         ],
       )
         : Container(),

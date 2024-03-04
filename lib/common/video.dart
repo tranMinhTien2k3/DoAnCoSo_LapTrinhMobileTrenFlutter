@@ -10,11 +10,9 @@ class Video {
     required this.name
   });
 }
-
 class ListVideo{
   final List lVid;
   final String genre;
-
   ListVideo({required this.lVid, required this.genre});
 }
 

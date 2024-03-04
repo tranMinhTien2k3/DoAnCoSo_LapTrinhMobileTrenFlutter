@@ -1,3 +1,4 @@
+import 'package:appdemo/services/userOnline.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -20,24 +21,6 @@ class _CommentState extends State<CommentPage> {
   CollectionReference users = FirebaseFirestore.instance.collection("Users");
   List<String> usernames = [];
   List<String> avts = [];
-  Widget _backButton() {
-    return InkWell(
-      onTap: () {
-        Navigator.pushNamed(context, '/home');
-      },
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 10),
-        child: Row(
-          children: <Widget>[
-            Container(
-              padding: EdgeInsets.only(left: 0, top: 10, bottom: 10),
-              child: Icon(Icons.keyboard_arrow_left, color: Colors.black),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
   Future<bool> _isLoggedIn() async {
     if(user != null){
       userId = user!.uid;
@@ -98,6 +81,7 @@ class _CommentState extends State<CommentPage> {
   Widget commentChild(data) {
     return ListView(
       children: [
+        UserOnline(),
         for (var i = 0; i < data.length; i++)
           Padding(
             padding: const EdgeInsets.fromLTRB(2.0, 8.0, 2.0, 0.0),
@@ -119,13 +103,14 @@ class _CommentState extends State<CommentPage> {
                 ),
               ),
               title: Text(
-                data[i]['name'],
+                data[i]['text'],
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              subtitle: Text(data[i]['text']),
+              subtitle: Text(data[i]['name']),
               trailing: Text(timeago.format(data[i]['time'].toDate()), style: TextStyle(fontSize: 10)),
             ),
-          )
+          ),
+
       ],
     );
   }
@@ -135,11 +120,10 @@ class _CommentState extends State<CommentPage> {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         backgroundColor: Colors.green[200],
-        leading: _backButton(),
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Comment"),
+            Text("Thảo Luận"),
           ],
         ),
       ),
@@ -148,7 +132,7 @@ class _CommentState extends State<CommentPage> {
           userImage: CommentBox.commentImageParser(
               imageURLorPath: avts.isNotEmpty ? avts[0] :"assets/img/user.png"),
           child: commentChild(widget.comments),
-          labelText: 'Write a comment...',
+          labelText: 'Viết bình luận',
           errorText: 'Comment cannot be blank',
           withBorder: false,
           sendButtonMethod: () {
