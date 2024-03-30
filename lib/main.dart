@@ -55,7 +55,7 @@ class _MyAppState extends ConsumerState<MyApp> {
         '/notifucation':(context) => Notifucation(),
         '/content':(context) =>CreateContent(),
         '/fwp':(context) =>ForgotPW(),
-        '/mycontent':(context) => Mycontent(),
+        '/mycontent':(context) => MyContent(),
       },  
     );   
   }

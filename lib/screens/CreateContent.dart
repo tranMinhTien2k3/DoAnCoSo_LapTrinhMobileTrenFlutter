@@ -27,13 +27,16 @@ class _CreateContent extends State<CreateContent> {
   CollectionReference _video = FirebaseFirestore.instance.collection('video');
   List<String> imageUrls = [];
   String videourl = "";
-  String? _selectedOption;
-  List<String> options = [];
+  String? _selectedOption ;
+  List<String> _options = [];
   bool isPost = true;
+  List<String> _optionsList = []; 
+  String? _currentInput;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color.fromARGB(255, 220, 255, 231),
       appBar: AppBar(
         title: Text("Tạo nội dung"),
         centerTitle: false,
@@ -123,8 +126,8 @@ class _CreateContent extends State<CreateContent> {
             builder: (context, snapshot) {
               final documents = snapshot.data!.docs;
               List<String> genre = documents.map((doc) => doc['genre'].toString()).toList();
-              options.addAll(genre);
-              options = options.toSet().toList();
+              _options.addAll(genre);
+              _options = _options.toSet().toList();
               return ListView(
                 children: [
                   Row(
@@ -166,57 +169,63 @@ class _CreateContent extends State<CreateContent> {
                   ),
                   SizedBox(height: 20),
                   if (!isPost)
-                    Row(
-                      children: [
-                        Expanded(
-                          child: TextFormField(
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(),
-                              hintText: 'Tên danh sách video',
-                            ),
-                            onChanged: (value) {
-                              setState(() {
-                                _selectedOption = value;
-                              });
-                            },
+                    
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextFormField(
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            hintText: 'Tên danh sách video',
                           ),
-                        ),
-                        SizedBox(width: 10),
-                        ElevatedButton(
-                          onPressed: () {
-                            if (_selectedOption != null && _selectedOption!.isNotEmpty) {
+                          onChanged: (value) {
+                            _currentInput = value;
+                          },
+                          onEditingComplete: () {
+                            if (_currentInput != null && _currentInput!.isNotEmpty) {
                               setState(() {
-                                options.add(_selectedOption!);
-                                options = options.toSet().toList();
+                                _options.add(_currentInput!);
+                                _currentInput = ''; 
                               });
                             }
                           },
-                          child: Text('Thêm'),
                         ),
-                      ],
-                    ),
+                      ),
+                      SizedBox(width: 10),
+                      ElevatedButton(
+                        onPressed: () {
+                          if (_currentInput != null && _currentInput!.isNotEmpty) {
+                            setState(() {
+                              _options.add(_currentInput!);
+                              _currentInput = ''; 
+                            });
+                          }
+                        },
+                        child: Text('Thêm'),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 10),
                   if (!isPost)
-                    SizedBox(height: 10),
-                  if (!isPost)
-                    DropdownButton<String>(
+                  DropdownButton<String>(
                     value: _selectedOption,
                     onChanged: (String? newValue) {
                       setState(() {
                         _selectedOption = newValue;
                       });
                     },
-                    items: options.map<DropdownMenuItem<String>>((String value) {
+                    items: _options.map<DropdownMenuItem<String>>((String value) {
                       return DropdownMenuItem<String>(
                         value: value,
                         child: Text(value),
                       );
-                    }).toList()+
+                    }).toList() +
                     [
                       DropdownMenuItem<String>(
                         value: null,
                         child: Text('Chọn danh sách'),
                       ),
-                    ]
+                    ],
                   ),
                   SizedBox(height: 20),
                   if (isPost)
@@ -307,7 +316,7 @@ class _CreateContent extends State<CreateContent> {
                           ),
                         if (imageUrls.isEmpty)
                           Container(
-                            child: Text("Chọn biểu tượng camera để tải lên hình ảnh"),
+                            child: Text("Ấn biểu tượng camera để tải lên hình ảnh"),
                           ),
                           ],
                         ),
@@ -392,7 +401,8 @@ class _CreateContent extends State<CreateContent> {
                                       ),
                                       Container(
                                         height: 150,
-                                        child: VideoWidget(videoUrl: videourl),
+                                        width: 300,
+                                         child: VideoWidget(videoUrl: videourl),
                                       ),
                                       ElevatedButton(
                                         onPressed: () {

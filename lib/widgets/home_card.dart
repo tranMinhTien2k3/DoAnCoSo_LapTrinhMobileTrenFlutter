@@ -1,6 +1,6 @@
 import 'package:appdemo/common/toast.dart';
 import 'package:appdemo/common/video.dart';
-import 'package:appdemo/widgets/listvideo_detial.dart';
+import 'package:appdemo/screens/listvideo_detial.dart';
 import 'package:appdemo/widgets/media.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -43,6 +43,7 @@ class _HomecardState extends State<Homecard> {
           for (var doc in snapshot.data!.docs) {
             List<dynamic> videoList = doc['videolist'];
             originalVideos.addAll(videoList);
+
           }
           sortedVideos = List.from(originalVideos);
           filterVideos(widget.searchText);
@@ -62,7 +63,7 @@ class _HomecardState extends State<Homecard> {
                   } else if (userSnapshot.hasError) {
                     return Text('Error: ${userSnapshot.error}');
                   } else {
-                    String userName = userSnapshot.data?['fist name'] + userSnapshot.data?['last name'];
+                    String userName = userSnapshot.data?['fist name'] +" "+ userSnapshot.data?['last name'];
                     String avtUrl = userSnapshot.data?['image'] ?? '';
                     Uri relativeUri = Uri.parse(video['url']);
                     final VideoPlayerController controller = VideoPlayerController.networkUrl(relativeUri);
@@ -87,7 +88,9 @@ class _HomecardState extends State<Homecard> {
                                     thumbnailUrl: video['url'],
                                     name: userName,
                                     avt: avtUrl,
-                                  ),
+                                  ), lvid: ListVideo(lVid: originalVideos, genre: ''
+                                    
+                                  ), time: timeago.format(dateTime),
                                 ),
                               ),
                             );
@@ -144,7 +147,7 @@ class _HomecardState extends State<Homecard> {
                             ],
                           ),
                         ),
-                        Divider(),
+                        Divider(height:10,color: Colors.black,),
                       ],
                     );
                   }

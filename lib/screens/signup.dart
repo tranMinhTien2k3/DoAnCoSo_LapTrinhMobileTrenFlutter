@@ -47,6 +47,7 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
+      backgroundColor: Colors.green[100],
       body: Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -54,7 +55,7 @@ class _SignUpPageState extends State<SignUpPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                "Sign Up",
+                "Đăng ký tài khoản",
                 style: TextStyle(fontSize: 27, fontWeight: FontWeight.bold),
               ),
               SizedBox(
@@ -62,7 +63,7 @@ class _SignUpPageState extends State<SignUpPage> {
               ),
               FormContainerWidget(
                 controller: _fistnameController,
-                hintText: "fistName",
+                hintText: "Fist Name",
                 isPasswordField: false,
               ),
               SizedBox(
@@ -70,7 +71,7 @@ class _SignUpPageState extends State<SignUpPage> {
               ),
               FormContainerWidget(
                 controller: _lastnameController,
-                hintText: "lastName",
+                hintText: "Last Name",
                 isPasswordField: false,
               ),
               SizedBox(
@@ -78,7 +79,7 @@ class _SignUpPageState extends State<SignUpPage> {
               ),
               FormContainerWidget(
                 controller: _ageController,
-                hintText: "age",
+                hintText: "Age",
                 isPasswordField: false,
               ),
               SizedBox(

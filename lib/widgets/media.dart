@@ -71,12 +71,19 @@ class _VideoWidgetState extends State<VideoWidget> {
             child: VideoPlayer(_controller) 
           ),
           if (_videoDuration != null) 
-            Text(
+          Positioned(
+            width: 70,
+            height:30,
+            right: 1.0,
+            bottom: 1.0,
+            child: Text(
               '${_videoDuration!.toString().split('.').first}',
               style: TextStyle(
                 fontSize: 18,
                 color: Colors.white,
+                backgroundColor: Colors.black,
               ),
+            ),
             ),
         ],
       )

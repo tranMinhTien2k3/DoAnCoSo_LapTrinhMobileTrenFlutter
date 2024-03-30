@@ -33,6 +33,7 @@ class _LoginPageState extends State<LoginPage> {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         automaticallyImplyLeading: false,
+        backgroundColor: Colors.green[100],
         leading: IconButton(
           icon: Icon(Icons.home),
           onPressed: (){
@@ -191,7 +192,7 @@ class _LoginPageState extends State<LoginPage> {
     });
 
     if (user != null) {
-      showToast(message: "User is successfully signed in");
+      showToast(message: "Đăng nhập thành công");
       Navigator.pushNamed(context, "/home");
     } else {
       showToast(message: "some error occured");

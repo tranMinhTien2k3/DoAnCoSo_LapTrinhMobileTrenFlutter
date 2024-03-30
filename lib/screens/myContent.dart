@@ -3,14 +3,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class Mycontent extends StatefulWidget {
-  const Mycontent({Key? key}) : super(key: key);
+class MyContent extends StatefulWidget {
+  const MyContent({Key? key}) : super(key: key);
 
   @override
-  State<Mycontent> createState() => _Mycontent();
+  State<MyContent> createState() => _Mycontent();
 }
 
-class _Mycontent extends State<Mycontent> {
+class _Mycontent extends State<MyContent> {
   late String currentUserID;
   CollectionReference users = FirebaseFirestore.instance.collection("Users");
   CollectionReference post = FirebaseFirestore.instance.collection("post");
@@ -20,6 +20,7 @@ class _Mycontent extends State<Mycontent> {
     super.initState();
     currentUserID = FirebaseAuth.instance.currentUser!.uid;
   }
+
 
 
   @override
@@ -54,12 +55,10 @@ class _Mycontent extends State<Mycontent> {
           List<Future<void>> futures = [];
           for (int index = 0; index < documents.length; index++) {
             final data = documents[index].data() as Map<String, dynamic>;
-
             Future<void> future = users.doc(data['name']).get().then((snapshot) {
               if (snapshot.exists) {
                 Map<String, dynamic>? userData =
                     snapshot.data() as Map<String, dynamic>?;
-
                 if (userData != null) {
                   String firstName = userData['fist name'] ?? '';
                   String lastName = userData['last name'] ?? '';
@@ -70,7 +69,6 @@ class _Mycontent extends State<Mycontent> {
                 }
               }
             });
-
             futures.add(future); 
           }
           return FutureBuilder<void>(

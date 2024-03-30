@@ -30,24 +30,21 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: const Color.fromARGB(255, 182, 218, 184),
+      backgroundColor: Color.fromARGB(255, 220, 255, 231),
       appBar: AppBar(
-        title: _isSearching
-          ? TextField(
-            onChanged: (value) {
-              setState(() {
-                searchText = value;
-                print(searchText);
-                _isSearching = searchText.isNotEmpty;
-              });
-            },
-            decoration: const InputDecoration(
-              hintText: 'Tìm Kiếm...',
-              border: InputBorder.none,
-            ),
-            style: const TextStyle(color: Colors.white),
-          )
-          : const Text('Trang chủ'),
+        title: (_isSearching) ? TextField(
+          decoration: const InputDecoration(
+            hintText: 'Tìm Kiếm...',
+            border: InputBorder.none,
+          ),
+          onSubmitted: (value) {
+            setState(() {
+              searchText = value;
+              _isSearching = searchText.isNotEmpty;
+            });
+          },
+          style: const TextStyle(color: Colors.white),
+        ): Text("Home"),
         backgroundColor: Colors.blue,
         actions:[
            (_isSearching) ?
@@ -57,6 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
               setState(() {
                 searchText ="";
                 _isSearching = false;
+                Navigator.of(context);
               });
             },
           ):IconButton(
@@ -64,7 +62,6 @@ class _HomeScreenState extends State<HomeScreen> {
               onPressed: () {
                   setState(() {
                     _isSearching = true;
-                   Navigator.of(context);
                   });
                 },
             ),
@@ -122,7 +119,7 @@ class _HomeScreenState extends State<HomeScreen> {
               title: const Text(' Thông tin cá nhân '),
               onTap: () {
                 _isLoggedIn()?
-                Navigator.pushNamed(context, '/profile'):showToast(message: "You cant login");
+                Navigator.pushNamed(context, '/profile'):showToast(message: "Bạn cần đăng nhập");
               },
             ),
             ListTile(
@@ -130,7 +127,7 @@ class _HomeScreenState extends State<HomeScreen> {
               title: const Text(' Quản lý Thời gian biểu '),
               onTap: () {
                 _isLoggedIn()?
-                Navigator.pushNamed(context, '/schedule'):showToast(message: "You cant login");
+                Navigator.pushNamed(context, '/schedule'):showToast(message: "Bạn cần đăng nhập");
               },
             ),
             ListTile(
@@ -138,7 +135,7 @@ class _HomeScreenState extends State<HomeScreen> {
               title: const Text(' Thông báo '),
               onTap: () {
                 _isLoggedIn()?
-                Navigator.pushNamed(context, '/notifucation'):showToast(message: "You cant login");
+                Navigator.pushNamed(context, '/notifucation'):showToast(message: "Bạn cần đăng nhập");
               },
             ),
             ListTile(
@@ -146,7 +143,8 @@ class _HomeScreenState extends State<HomeScreen> {
               title: const Text('Nội dung của tôi'),
               onTap: () {
                 _isLoggedIn()?
-                Navigator.pushNamed(context, '/mycontent'):showToast(message: "You cant login");
+                Navigator.pushNamed(context, '/mycontent'): showToast(message: "Bạn cần đăng nhập");
+                // showToast(message: "Tính năng đang được phát triển");
               },
             ),
             ListTile(
@@ -154,7 +152,7 @@ class _HomeScreenState extends State<HomeScreen> {
               title: const Text('Tạo nội dung'),
               onTap: () {
                 _isLoggedIn()?
-                Navigator.pushNamed(context, '/content'):showToast(message: "You cant login");
+                Navigator.pushNamed(context, '/content'):showToast(message: "Bạn cần đăng nhập");
               },
             ),
             _isLoggedIn()==false?
@@ -176,91 +174,91 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
       body: Column(
+  children: [
+    SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Row(
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    selectedButtonIndex = 2;
-                    _isSearching = false;
-                  });
+          SizedBox(width: 10),
+          ElevatedButton(
+            onPressed: () {
+              setState(() {
+                selectedButtonIndex = 2;
+                _isSearching = false;
+              });
+            },
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                (Set<MaterialState> states) {
+                  return selectedButtonIndex == 2 ? Colors.blue : Colors.white;
                 },
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                    (Set<MaterialState> states) {
-                      if (selectedButtonIndex == 2) {
-                        return Colors.blue;
-                      }
-                      return Colors.white;
-                    },
-                  ),
-                ),
-                child: Text('Trang chủ'),
               ),
-              
-              SizedBox(width: 10), 
-              ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    selectedButtonIndex = 1;
-                    _isSearching = false;
-                  });
+            ),
+            child: Text('Trang chủ'),
+          ),
+          SizedBox(width: 10),
+          ElevatedButton(
+            onPressed: () {
+              setState(() {
+                selectedButtonIndex = 1;
+                _isSearching = false;
+              });
+            },
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                (Set<MaterialState> states) {
+                  return selectedButtonIndex == 1 ? Colors.blue : Colors.white;
                 },
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                    (Set<MaterialState> states) {
-                      if (selectedButtonIndex == 1) {
-                        return Colors.blue;
-                      }
-                      return Colors.white;
-                    },
-                  ),
-                ),
-                child: Text('Danh sách Video'),
               ),
-              SizedBox(width: 10), 
-              ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    selectedButtonIndex = 0;
-                    _isSearching = false;
-                  });
+            ),
+            child: Text('Danh sách Video'),
+          ),
+          SizedBox(width: 10),
+          ElevatedButton(
+            onPressed: () {
+              setState(() {
+                selectedButtonIndex = 0;
+                _isSearching = false;
+              });
+            },
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                (Set<MaterialState> states) {
+                  return selectedButtonIndex == 0 ? Colors.blue : Colors.white;
                 },
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                    (Set<MaterialState> states) {
-                      if (selectedButtonIndex == 0) {
-                        return Colors.blue;
-                      }
-                      return Colors.white;
-                    },
-                  ),
-                ),
-                child: Text('Bản tin'),
               ),
-            ],
+            ),
+            child: Text('Bản tin'),
           ),
-          if (selectedButtonIndex == 0)
-          Container(
-            width: 400,
-            height: 550,
-            child: ContentCard(searchText: _isSearching ? searchText : '',),
-          ),
-          if(selectedButtonIndex ==1)
-           Container(
-            width: 400,
-            height: 550,
-            child: ListVdCard(searchText: _isSearching ? searchText : '',)
-          ),
-          if(selectedButtonIndex ==2)
-          Container(
-            width: 400,
-            height: 550,
-            child: Homecard(searchText: _isSearching ? searchText : '',)
-          ),
+          SizedBox(width: 10),
         ],
       ),
+    ),
+
+    SizedBox(height: 20),
+    Expanded(
+      child: selectedButtonIndex == 0
+          ? Container(
+              width: 400,
+              height: 550,
+              child: ContentCard(searchText: _isSearching ? searchText : ''),
+            )
+          : selectedButtonIndex == 1
+              ? Container(
+                  width: 400,
+                  height: 550,
+                  child: ListVdCard(searchText: _isSearching ? searchText : ''),
+                )
+              : Container(
+                  width: 400,
+                  height: 550,
+                  child: Homecard(searchText: _isSearching ? searchText : ''),
+                ),
+    ),  
+  ],
+),
+
     );
   }
 }

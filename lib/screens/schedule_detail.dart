@@ -19,13 +19,13 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
       return true;
     }else return false;
   }
-  List<Event> events = [];
+  List<Events> events = [];
   TextEditingController eventcontroller = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _getEventsFromFirestore(); // Fetch events when the screen loads
+    _getEventsFromFirestore(); 
   }
 
   Future<void> _getEventsFromFirestore() async {
@@ -33,7 +33,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
       try {
         QuerySnapshot querySnapshot = await users.doc(userId).collection('events').get();
         setState(() {
-          events = querySnapshot.docs.map((doc) => Event(
+          events = querySnapshot.docs.map((doc) => Events(
             uid: doc.id,
             eventName: doc['eventName'],
             date: (doc['date'] as Timestamp).toDate(),
@@ -52,7 +52,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
         'date': date,
       }).then((docRef) {
         setState(() {
-          events.add(Event(uid: docRef.id, eventName: eventName, date: date));
+          events.add(Events(uid: docRef.id, eventName: eventName, date: date));
         });
       }).catchError((error) {
         print("Error adding event: $error");
@@ -60,7 +60,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     }
   }
 
-  void _editEvent(Event event, String newEventName, DateTime newDate) {
+  void _editEvent(Events event, String newEventName, DateTime newDate) {
     if (_isLoggedIn()) {
       users.doc(userId).collection('events').doc(event.uid).update({
         'eventName': newEventName,
@@ -76,7 +76,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     }
   }
 
-  void _deleteEvent(Event event) {
+  void _deleteEvent(Events event) {
     if (_isLoggedIn()) {
       users.doc(userId).collection('events').doc(event.uid).delete().then((_) {
         setState(() {
@@ -96,13 +96,14 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     });
   }
 
-  List<Event> _getEventsForDay(DateTime day) {
+  List<Events> _getEventsForDay(DateTime day) {
     return events.where((event) => isSameDay(event.date, day)).toList();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color.fromARGB(255, 220, 255, 231),
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text("Quản lý lịch học"),
@@ -235,10 +236,9 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   }
 }
 
-class Event {
+class Events {
   String uid;
   String eventName;
   DateTime date;
-
-  Event({required this.uid, required this.eventName, required this.date});
+  Events({required this.uid, required this.eventName, required this.date});
 }

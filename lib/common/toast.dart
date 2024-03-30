@@ -16,12 +16,45 @@ void showToast({required String message}){
       fontSize: 16.0
   );
 }
-void signOut(context){
-  FirebaseAuth.instance.signOut();
-  Navigator.pushNamed(context, "/home");
-}
+// void signOut(context){
+//   FirebaseAuth.instance.signOut();
+//   Navigator.pushNamed(context, "/login");
+// }
 CollectionReference users = FirebaseFirestore.instance.collection("Users");
 
+Future<void> signOut(BuildContext context) async {
+  return showDialog<void>(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Xác nhận'),
+        content: SingleChildScrollView(
+          child: ListBody(
+            children: <Widget>[
+              Text('Bạn có muốn đăng xuất tài khoản ?'),
+            ],
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text('Hủy'),
+          ),
+          TextButton(
+            onPressed: () async {
+              await FirebaseAuth.instance.signOut();
+              Navigator.pushNamed(context, '/home');
+            },
+            child: Text('Đồng ý'),
+          ),
+        ],
+      );
+    },
+  );
+}
 Future<Uint8List> generateThumbnail(String videoUrl) async {
   final thumbnail = await VideoThumbnail.thumbnailData(
     video: videoUrl,

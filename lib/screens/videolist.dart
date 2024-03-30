@@ -1,9 +1,13 @@
 import 'dart:typed_data';
+import 'package:appdemo/common/toast.dart';
+import 'package:appdemo/screens/schedule_detail.dart';
+import 'package:appdemo/widgets/media.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 import 'package:appdemo/common/video.dart';
-import 'package:appdemo/widgets/listvideo_detial.dart';
+import 'package:appdemo/screens/listvideo_detial.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class VideoList extends StatefulWidget {
@@ -19,6 +23,108 @@ class VideoList extends StatefulWidget {
 
 class _VideoListState extends State<VideoList> {
   late Future<List<Uint8List>> _thumbnailsFuture;
+  CollectionReference users = FirebaseFirestore.instance.collection("Users");
+  final user = FirebaseAuth.instance.currentUser;
+  late String userId = "";
+  bool _isLoggedIn() {
+    if(user != null){
+      userId = user!.uid;
+      return true;
+    }else return false;
+  }
+  List saveVideo = [];
+  void _addEvent(String eventName, DateTime date, Map<String, dynamic> video) {
+    if (_isLoggedIn()) {
+      users.doc(userId).collection('events').add({
+        'eventName': eventName,
+        'date': date,
+        'video': video,
+      }).then((docRef) {
+        setState(() {
+          saveVideo.add(Events(uid: docRef.id, eventName: eventName, date: date));
+        });
+      }).catchError((error) {
+        print("Error adding event: $error");
+      });
+    } else {
+      showToast(message: "Vui lòng đăng nhập để thực hiện tác vụ");
+    }
+  }
+  // void _addList() {
+  //   if (_isLoggedIn()) {
+  //     users.doc(userId).collection('saveList').add({
+
+  //     }).then((docRef) {
+  //       setState(() {
+  //       });
+  //     }).catchError((error) {
+  //       print("Error adding event: $error");
+  //     });
+  //   } else {
+  //     showToast(message: "Vui lòng đăng nhập để thực hiện tác vụ");
+  //   }
+  // }
+
+
+  void _showVideoSelectionDialog(DateTime selectedDate) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Chọn video'),
+        content: SingleChildScrollView(
+          child: Column(
+            children: widget.lvid.lVid.map((video) {
+              return ListTile(
+                title: Text(video['title']),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  _showEventDialog(video, selectedDate);
+                },
+              );
+            }).toList(),
+          ),
+        ),
+      ),
+    );
+  }
+  void _showEventDialog(Map<String, dynamic> selectedVideo, DateTime selectedDate) {
+    String eventName = '';
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Thêm sự kiện'),
+        content: TextField(
+          onChanged: (value) {
+            eventName = value;
+          },
+          decoration: InputDecoration(hintText: 'Nhập tên sự kiện'),
+        ),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text('Hủy'),
+          ),
+          TextButton(
+            onPressed: () {
+              if (eventName.isNotEmpty) {
+                // Thực hiện thêm sự kiện vào lịch ở đây
+                _addEvent(eventName, selectedDate, selectedVideo);
+                Navigator.of(context).pop();
+              } else {
+                showToast(message: 'Vui lòng nhập tên sự kiện');
+              }
+            },
+            child: Text('Thêm'),
+          ),
+        ],
+      ),
+    );
+  }
+
+
 
   @override
   void initState() {
@@ -40,8 +146,6 @@ class _VideoListState extends State<VideoList> {
     return thumbnails;
   }
 
-  CollectionReference users = FirebaseFirestore.instance.collection("Users");
-
   Future<Map<String, dynamic>> getUserData(String userId) async {
     try {
       DocumentSnapshot userSnapshot = await users.doc(userId).get();
@@ -53,12 +157,12 @@ class _VideoListState extends State<VideoList> {
     }
     return {};
   }
-
+ 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: Color.fromARGB(255, 253, 255, 254),
+      backgroundColor: Color.fromARGB(255, 220, 255, 231),
       appBar: AppBar(
         backgroundColor: Colors.blue,
         title: Text("Danh sách phát"),
@@ -130,12 +234,34 @@ class _VideoListState extends State<VideoList> {
                         children: [
                           ElevatedButton(
                             onPressed: () {
+                              showDatePicker(
+                                context: context,
+                                initialDate: DateTime.now(),
+                                firstDate: DateTime.now(),
+                                lastDate: DateTime(DateTime.now().year + 1),
+                              ).then((selectedDate) {
+                                if (selectedDate != null) {
+                                  _showVideoSelectionDialog(selectedDate);
+                                }
+                              });
                             },
                             child: Icon(Icons.calendar_month),
                             style: ElevatedButton.styleFrom(
                               shape: CircleBorder(),
                             ),
                           ),
+
+                          ElevatedButton(
+                            onPressed: () {
+                              showToast(message: 'chức năng đang được phát triển');
+                              // _addList();
+                            },
+                            child: Icon(Icons.add_box),
+                            style: ElevatedButton.styleFrom(
+                              shape: CircleBorder(),
+                            ),
+                          ),
+
                         ],
                       ),
                     ),
@@ -170,22 +296,20 @@ class _VideoListState extends State<VideoList> {
                                         thumbnailUrl: widget.lvid.lVid[index]['url'],
                                         name: userName,
                                         avt: avtUrl,
-                                      ),
+                                      ), lvid: widget.lvid, time: timeago.format(dateTime),
                                     ),
                                   ),
                                 );
                               },
                               child: Container(
-                                height: 130,
+                                height: 135,
                                 padding: EdgeInsets.all(15),
                                 child: Row(
                                   children: [
                                     ClipRRect(
                                       borderRadius: BorderRadius.circular(8.0),
-                                      child: Image.memory(
-                                        thumbnails[index],
-                                        height: 120,
-                                        fit: BoxFit.cover,
+                                      child: VideoWidget(
+                                        videoUrl: widget.lvid.lVid[index]['url'],
                                       ),
                                     ),
                                     SizedBox(width: 10),
@@ -215,6 +339,7 @@ class _VideoListState extends State<VideoList> {
                                               color: Colors.grey,
                                             ),
                                           ),
+                                          
                                         ],
                                       ),
                                     ),

@@ -28,7 +28,7 @@ class _ContentCardState extends State<ContentCard> {
            if (userData != null) {
             String firstName = userData['fist name'] ?? '';
             String lastName = userData['last name'] ?? '';
-            String username = '$firstName $lastName';
+            String username = '${firstName}'+" "+' ${lastName}';
             usernames.add(username);
             String avt =  userData['image'];
             avts.add(avt);

@@ -28,7 +28,7 @@ class _ProfileScreen extends State<ProfileScreen>{
     await showDialog(
       context: context, 
       builder:(context)=>AlertDialog(
-        backgroundColor: Color.fromARGB(255, 175, 196, 175),
+        backgroundColor: Color.fromARGB(255, 220, 255, 231),
         title: Text("Edit: "+field),
         content: TextField(
           autofocus: true,
